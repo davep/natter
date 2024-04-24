@@ -5,9 +5,10 @@
 from asyncio import iscoroutine
 from textual import on, work
 from textual.app import ComposeResult
+from textual.containers import VerticalScroll
 from textual.reactive import var
 from textual.screen import Screen
-from textual.widgets import Markdown
+from textual.widgets import Label, Markdown
 
 ##############################################################################
 # Ollama imports.
@@ -18,22 +19,38 @@ from ollama import AsyncClient, Message
 from ..widgets import UserInput
 
 ##############################################################################
-class Main(Screen):
-    """The main screen for the application."""
+class Agent(Markdown):
+    """A widget to show agent chat."""
 
-    CSS = """
-    Main {
-        &> Markdown {
-            height: 1fr;
-        }
+    DEFAULT_CSS = """
+    Agent {
+        margin-left: 5;
+        background: $boost;
     }
     """
+
+##############################################################################
+class User(Label):
+    """A widget to show user chat."""
+
+    DEFAULT_CSS = """
+    User {
+        width: 1fr;
+        content-align-horizontal: right;
+        margin-right: 5;
+        background: $boost;
+    }
+    """
+
+##############################################################################
+class Main(Screen):
+    """The main screen for the application."""
 
     conversation: var[list[Message]] = var(list)
     """The ongoing conversation."""
 
     def compose(self) -> ComposeResult:
-        yield Markdown()
+        yield VerticalScroll()
         yield UserInput()
 
     @on(UserInput.Submitted)
@@ -48,6 +65,7 @@ class Main(Screen):
 
     @work
     async def process_input(self, text: str) -> None:
+        await self.query_one(VerticalScroll).mount(User(text))
         chat = AsyncClient().chat(
             model="llama3",
             messages=[
@@ -58,9 +76,11 @@ class Main(Screen):
         )
         assert iscoroutine(chat)
         reply = ""
+        await self.query_one(VerticalScroll).mount(output := Agent())
         async for part in await chat:
             reply += part["message"]["content"]
-            self.query_one(Markdown).update(reply)
+            await output.update(reply)
+            self.scroll_to_widget(output)
             if part["message"]["content"]:
                 self.conversation.append(part["message"])
 
