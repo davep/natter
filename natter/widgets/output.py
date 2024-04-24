@@ -12,6 +12,10 @@ class Agent(Markdown):
     Agent {
         margin-left: 5;
         background: $boost;
+
+        MarkdownFence {
+            max-height: initial;
+        }
     }
     """
 
