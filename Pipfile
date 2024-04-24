@@ -8,6 +8,8 @@ ollama = "*"
 textual = "*"
 
 [dev-packages]
+pre-commit = "*"
+black = "*"
 
 [requires]
 python_version = "3.12"

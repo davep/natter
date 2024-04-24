@@ -4,6 +4,7 @@
 # Textual imports.
 from textual.widgets import Label, Markdown
 
+
 ##############################################################################
 class Agent(Markdown):
     """A widget to show agent chat."""
@@ -19,6 +20,7 @@ class Agent(Markdown):
     }
     """
 
+
 ##############################################################################
 class User(Label):
     """A widget to show user chat."""
@@ -31,5 +33,6 @@ class User(Label):
         background: $boost;
     }
     """
+
 
 ### output.py ends here

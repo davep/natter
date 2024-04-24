@@ -1,8 +1,15 @@
 """The main screen."""
 
 ##############################################################################
-# Textual imports.
+# Python imports.
 from asyncio import iscoroutine
+
+##############################################################################
+# Ollama imports.
+from ollama import AsyncClient, Message
+
+##############################################################################
+# Textual imports.
 from textual import on, work
 from textual.app import ComposeResult
 from textual.containers import VerticalScroll
@@ -10,12 +17,9 @@ from textual.reactive import var
 from textual.screen import Screen
 
 ##############################################################################
-# Ollama imports.
-from ollama import AsyncClient, Message
-
-##############################################################################
 # Local imports.
 from ..widgets import Agent, User, UserInput
+
 
 ##############################################################################
 class Main(Screen):
@@ -43,10 +47,7 @@ class Main(Screen):
         await self.query_one(VerticalScroll).mount(User(text))
         chat = AsyncClient().chat(
             model="llama3",
-            messages=[
-                *self.conversation,
-                {"role": "user", "content": text}
-            ],
+            messages=[*self.conversation, {"role": "user", "content": text}],
             stream=True,
         )
         assert iscoroutine(chat)
@@ -58,5 +59,6 @@ class Main(Screen):
             self.scroll_to_widget(output)
             if part["message"]["content"]:
                 self.conversation.append(part["message"])
+
 
 ### main.py ends here

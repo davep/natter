@@ -14,6 +14,7 @@ from textual.events import Key
 from textual.message import Message
 from textual.widgets import TextArea
 
+
 ##############################################################################
 class UserInput(TextArea):
     """The user input widget."""
@@ -44,5 +45,6 @@ class UserInput(TextArea):
         if event.key == "enter":
             self.post_message(self.Submitted(self, self.text))
             event.prevent_default()
+
 
 ### user_input.py ends here

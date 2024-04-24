@@ -8,6 +8,7 @@ from textual.app import App
 # Local imports.
 from .screens import Main
 
+
 ##############################################################################
 class Natter(App[None]):
     """The Natter application."""
