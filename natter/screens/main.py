@@ -25,6 +25,8 @@ from ..widgets import Agent, User, UserInput
 class Main(Screen):
     """The main screen for the application."""
 
+    AUTO_FOCUS = "UserInput"
+
     conversation: var[list[Message]] = var(list)
     """The ongoing conversation."""
 
