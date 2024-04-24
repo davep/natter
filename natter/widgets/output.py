@@ -11,10 +11,11 @@ class Agent(Markdown):
 
     DEFAULT_CSS = """
     Agent {
-        margin-left: 5;
-        background: $boost;
-
+        background: $primary-background;
+        margin: 0;
+        padding: 1 2;
         MarkdownFence {
+            margin: 1 2;
             max-height: initial;
         }
     }
@@ -27,10 +28,9 @@ class User(Label):
 
     DEFAULT_CSS = """
     User {
+        background: $secondary-background;
         width: 1fr;
-        content-align-horizontal: right;
-        margin-right: 5;
-        background: $boost;
+        padding: 1 2;
     }
     """
 
