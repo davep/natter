@@ -2,10 +2,11 @@
 
 ##############################################################################
 # Local imports.
+from .output import Agent, User
 from .user_input import UserInput
 
 ##############################################################################
 # Exports.
-__all__ = ["UserInput"]
+__all__ = ["Agent", "User", "UserInput"]
 
 ### __init__.py ends here

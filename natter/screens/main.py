@@ -8,7 +8,6 @@ from textual.app import ComposeResult
 from textual.containers import VerticalScroll
 from textual.reactive import var
 from textual.screen import Screen
-from textual.widgets import Label, Markdown
 
 ##############################################################################
 # Ollama imports.
@@ -16,31 +15,7 @@ from ollama import AsyncClient, Message
 
 ##############################################################################
 # Local imports.
-from ..widgets import UserInput
-
-##############################################################################
-class Agent(Markdown):
-    """A widget to show agent chat."""
-
-    DEFAULT_CSS = """
-    Agent {
-        margin-left: 5;
-        background: $boost;
-    }
-    """
-
-##############################################################################
-class User(Label):
-    """A widget to show user chat."""
-
-    DEFAULT_CSS = """
-    User {
-        width: 1fr;
-        content-align-horizontal: right;
-        margin-right: 5;
-        background: $boost;
-    }
-    """
+from ..widgets import Agent, User, UserInput
 
 ##############################################################################
 class Main(Screen):
