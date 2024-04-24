@@ -46,6 +46,11 @@ class Main(Screen):
 
     @work
     async def process_input(self, text: str) -> None:
+        """Process the input from the user.
+
+        Args:
+            text: The text to process.
+        """
         await self.query_one(VerticalScroll).mount(User(text))
         chat = AsyncClient().chat(
             model="llama3",
