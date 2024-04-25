@@ -42,10 +42,10 @@ class Main(Screen[None]):
 
     AUTO_FOCUS = "UserInput"
 
-    client: var[AsyncClient] = var(AsyncClient)
+    _client: var[AsyncClient] = var(AsyncClient)
     """The Ollama client."""
 
-    conversation: var[list[Message]] = var(list)
+    _conversation: var[list[Message]] = var(list)
     """The ongoing conversation."""
 
     def compose(self) -> ComposeResult:
@@ -71,9 +71,9 @@ class Main(Screen[None]):
         """
         await self.query_one(VerticalScroll).mount(User(text))
         self.query_one(VerticalScroll).scroll_end()
-        chat = self.client.chat(
+        chat = self._client.chat(
             model="llama3",
-            messages=[*self.conversation, {"role": "user", "content": text}],
+            messages=[*self._conversation, {"role": "user", "content": text}],
             stream=True,
         )
         assert iscoroutine(chat)
@@ -85,7 +85,7 @@ class Main(Screen[None]):
                 await output.update(reply)
                 self.query_one(VerticalScroll).scroll_end()
                 if part["message"]["content"]:
-                    self.conversation.append(part["message"])
+                    self._conversation.append(part["message"])
         except (ResponseError, ConnectError) as error:
             await output.remove()
             self.notify(str(error), title="Ollama error", severity="error")
