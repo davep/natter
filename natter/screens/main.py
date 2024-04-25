@@ -70,8 +70,9 @@ class Main(Screen[None]):
         Args:
             event: The input event to handle.
         """
-        self.query_one(UserInput).text = ""
-        self.process_input(event.value)
+        if event.value:
+            self.query_one(UserInput).text = ""
+            self.process_input(event.value)
 
     @work
     async def process_input(self, text: str) -> None:
