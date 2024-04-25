@@ -19,6 +19,7 @@ from textual.app import ComposeResult
 from textual.containers import VerticalScroll
 from textual.reactive import var
 from textual.screen import Screen
+from textual.widgets import LoadingIndicator
 
 ##############################################################################
 # Local imports.
@@ -37,6 +38,13 @@ class Main(Screen[None]):
         &:focus {
             border-left: thick $primary;
         }
+    }
+
+    LoadingIndicator {
+        width: 1fr;
+        height: auto;
+        content-align-horizontal: right;
+        padding-right: 2;
     }
     """
 
@@ -79,6 +87,7 @@ class Main(Screen[None]):
         assert iscoroutine(chat)
         reply = ""
         await self.query_one(VerticalScroll).mount(output := Agent())
+        await self.query_one(VerticalScroll).mount(loading := LoadingIndicator())
         try:
             async for part in await chat:
                 reply += part["message"]["content"]
@@ -91,6 +100,8 @@ class Main(Screen[None]):
             self.notify(str(error), title="Ollama error", severity="error")
             await self.query_one(VerticalScroll).mount(Error(str(error)))
             self.query_one(VerticalScroll).scroll_end()
+        finally:
+            await loading.remove()
 
 
 ### main.py ends here
