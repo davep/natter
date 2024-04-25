@@ -42,6 +42,9 @@ class Main(Screen[None]):
 
     AUTO_FOCUS = "UserInput"
 
+    client: var[AsyncClient] = var(AsyncClient)
+    """The Ollama client."""
+
     conversation: var[list[Message]] = var(list)
     """The ongoing conversation."""
 
@@ -68,7 +71,7 @@ class Main(Screen[None]):
         """
         await self.query_one(VerticalScroll).mount(User(text))
         self.query_one(VerticalScroll).scroll_end()
-        chat = AsyncClient().chat(
+        chat = self.client.chat(
             model="llama3",
             messages=[*self.conversation, {"role": "user", "content": text}],
             stream=True,
