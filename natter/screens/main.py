@@ -5,8 +5,12 @@
 from asyncio import iscoroutine
 
 ##############################################################################
+# httpx imports.
+from httpx import ConnectError
+
+##############################################################################
 # Ollama imports.
-from ollama import AsyncClient, Message
+from ollama import AsyncClient, Message, ResponseError
 
 ##############################################################################
 # Textual imports.
@@ -18,7 +22,7 @@ from textual.screen import Screen
 
 ##############################################################################
 # Local imports.
-from ..widgets import Agent, User, UserInput
+from ..widgets import Agent, Error, User, UserInput
 
 
 ##############################################################################
@@ -51,7 +55,8 @@ class Main(Screen):
         Args:
             text: The text to process.
         """
-        await self.query_one(VerticalScroll).mount(User(text))
+        await self.query_one(VerticalScroll).mount(output := User(text))
+        self.scroll_to_widget(output)
         chat = AsyncClient().chat(
             model="llama3",
             messages=[*self.conversation, {"role": "user", "content": text}],
@@ -60,12 +65,18 @@ class Main(Screen):
         assert iscoroutine(chat)
         reply = ""
         await self.query_one(VerticalScroll).mount(output := Agent())
-        async for part in await chat:
-            reply += part["message"]["content"]
-            await output.update(reply)
+        try:
+            async for part in await chat:
+                reply += part["message"]["content"]
+                await output.update(reply)
+                self.scroll_to_widget(output)
+                if part["message"]["content"]:
+                    self.conversation.append(part["message"])
+        except (ResponseError, ConnectError) as error:
+            await output.remove()
+            self.notify(str(error), title="Ollama error", severity="error")
+            await self.query_one(VerticalScroll).mount(output := Error(str(error)))
             self.scroll_to_widget(output)
-            if part["message"]["content"]:
-                self.conversation.append(part["message"])
 
 
 ### main.py ends here

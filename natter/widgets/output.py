@@ -35,4 +35,15 @@ class User(Label):
     """
 
 
+##############################################################################
+class Error(User):
+    """A widget to show an error."""
+
+    DEFAULT_CSS = """
+    Error {
+        background: $error;
+    }
+    """
+
+
 ### output.py ends here
