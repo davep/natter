@@ -29,6 +29,17 @@ from ..widgets import Agent, Error, User, UserInput
 class Main(Screen):
     """The main screen for the application."""
 
+    CSS = """
+    VerticalScroll, UserInput {
+        background: $primary-background;
+        border: none;
+        border-left: blank;
+        &:focus {
+            border-left: thick $primary;
+        }
+    }
+    """
+
     AUTO_FOCUS = "UserInput"
 
     conversation: var[list[Message]] = var(list)
