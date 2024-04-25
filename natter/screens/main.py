@@ -80,8 +80,7 @@ class Main(Screen[None]):
         Args:
             text: The text to process.
         """
-        output = self.query_one(VerticalScroll)
-        await self.query_one(VerticalScroll).mount_all(
+        await (output := self.query_one(VerticalScroll)).mount_all(
             [User(text), agent := Agent(), loading := LoadingIndicator()]
         )
         output.scroll_end()
