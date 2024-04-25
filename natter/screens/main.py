@@ -80,8 +80,11 @@ class Main(Screen[None]):
         Args:
             text: The text to process.
         """
-        await self.query_one(VerticalScroll).mount(User(text))
-        self.query_one(VerticalScroll).scroll_end()
+        output = self.query_one(VerticalScroll)
+        await self.query_one(VerticalScroll).mount_all(
+            [User(text), agent := Agent(), loading := LoadingIndicator()]
+        )
+        output.scroll_end()
         chat = self._client.chat(
             model="llama3",
             messages=[*self._conversation, {"role": "user", "content": text}],
@@ -89,21 +92,18 @@ class Main(Screen[None]):
         )
         assert iscoroutine(chat)
         reply = ""
-        await self.query_one(VerticalScroll).mount_all(
-            [output := Agent(), loading := LoadingIndicator()]
-        )
         try:
             async for part in await chat:
                 reply += part["message"]["content"]
-                await output.update(reply)
-                self.query_one(VerticalScroll).scroll_end()
+                await agent.update(reply)
+                output.scroll_end()
                 if part["message"]["content"]:
                     self._conversation.append(part["message"])
         except (ResponseError, ConnectError) as error:
-            await output.remove()
+            await agent.remove()
             self.notify(str(error), title="Ollama error", severity="error")
-            await self.query_one(VerticalScroll).mount(Error(str(error)))
-            self.query_one(VerticalScroll).scroll_end()
+            await output.mount(Error(str(error)))
+            output.scroll_end()
         finally:
             await loading.remove()
 
