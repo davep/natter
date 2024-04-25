@@ -10,6 +10,8 @@ textual = "*"
 [dev-packages]
 pre-commit = "*"
 black = "*"
+pylint = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.12"
