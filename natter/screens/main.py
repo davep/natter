@@ -86,8 +86,8 @@ class Main(Screen[None]):
         except (ResponseError, ConnectError) as error:
             await output.remove()
             self.notify(str(error), title="Ollama error", severity="error")
-            await self.query_one(VerticalScroll).mount(output := Error(str(error)))
-            self.scroll_to_widget(output)
+            await self.query_one(VerticalScroll).mount(Error(str(error)))
+            self.query_one(VerticalScroll).scroll_end()
 
 
 ### main.py ends here
