@@ -89,8 +89,9 @@ class Main(Screen[None]):
         )
         assert iscoroutine(chat)
         reply = ""
-        await self.query_one(VerticalScroll).mount(output := Agent())
-        await self.query_one(VerticalScroll).mount(loading := LoadingIndicator())
+        await self.query_one(VerticalScroll).mount_all(
+            [output := Agent(), loading := LoadingIndicator()]
+        )
         try:
             async for part in await chat:
                 reply += part["message"]["content"]
