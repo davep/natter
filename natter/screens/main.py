@@ -26,7 +26,7 @@ from ..widgets import Agent, Error, User, UserInput
 
 
 ##############################################################################
-class Main(Screen):
+class Main(Screen[None]):
     """The main screen for the application."""
 
     CSS = """
