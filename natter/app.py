@@ -13,6 +13,8 @@ from .screens import Main
 class Natter(App[None]):
     """The Natter application."""
 
+    ENABLE_COMMAND_PALETTE = False
+
     def on_mount(self) -> None:
         """Show the main screen once the app is mounted."""
         self.push_screen(Main())
