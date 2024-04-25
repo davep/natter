@@ -21,8 +21,13 @@ class UserInput(TextArea):
 
     DEFAULT_CSS = """
     UserInput {
+        background: $secondary-background;
+        padding: 1;
         height: auto;
         max-height: 25%;
+        &> .text-area--cursor-line {
+            background: initial;
+        }
     }
     """
 

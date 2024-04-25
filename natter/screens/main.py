@@ -31,8 +31,11 @@ class Main(Screen[None]):
     """The main screen for the application."""
 
     CSS = """
-    VerticalScroll, UserInput {
+    VerticalScroll {
         background: $primary-background;
+    }
+
+    VerticalScroll, UserInput {
         border: none;
         border-left: blank;
         &:focus {
