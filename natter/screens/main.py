@@ -55,8 +55,8 @@ class Main(Screen):
         Args:
             text: The text to process.
         """
-        await self.query_one(VerticalScroll).mount(output := User(text))
-        self.scroll_to_widget(output)
+        await self.query_one(VerticalScroll).mount(User(text))
+        self.query_one(VerticalScroll).scroll_end()
         chat = AsyncClient().chat(
             model="llama3",
             messages=[*self.conversation, {"role": "user", "content": text}],
@@ -69,7 +69,7 @@ class Main(Screen):
             async for part in await chat:
                 reply += part["message"]["content"]
                 await output.update(reply)
-                self.scroll_to_widget(output)
+                self.query_one(VerticalScroll).scroll_end()
                 if part["message"]["content"]:
                     self.conversation.append(part["message"])
         except (ResponseError, ConnectError) as error:
