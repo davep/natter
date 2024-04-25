@@ -31,6 +31,10 @@ class UserInput(TextArea):
     }
     """
 
+    BINDINGS = [
+        ("insert, ctrl+v", "soft_enter"),
+    ]
+
     @dataclass
     class Submitted(Message):
         """Message posted when the user submits input."""
@@ -50,6 +54,9 @@ class UserInput(TextArea):
         if event.key == "enter":
             self.post_message(self.Submitted(self, self.text))
             event.prevent_default()
+
+    def action_soft_enter(self) -> None:
+        self.insert("\n")
 
 
 ### user_input.py ends here
