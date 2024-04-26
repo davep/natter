@@ -56,6 +56,9 @@ class Main(Screen[None]):
 
     AUTO_FOCUS = "UserInput"
 
+    _COMMAND_PREFIX: Final[str] = "/"
+    """The prefix for commands."""
+
     _CONVERSATION_FILE: Final[str] = "conversation.json"
     """The name of the file to store the ongoing conversation in."""
 
@@ -69,20 +72,26 @@ class Main(Screen[None]):
         yield VerticalScroll()
         yield UserInput()
 
-    def on_mount(self) -> None:
+    async def on_mount(self) -> None:
         """Reload any previous conversation."""
         if not (source := (conversations_dir() / self._CONVERSATION_FILE)).exists():
             return
         self._conversation = loads(source.read_text())
-        self.query_one(VerticalScroll).mount_all(
+        await self.query_one(VerticalScroll).mount_all(
             [
                 {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
                 for part in self._conversation
             ]
         )
+        # Scrolling to the end feels like it should work here, but even with
+        # call_later it doesn't work; it needs a timer for some reason.
+        # TODO: look into if this is supposed to be the case or not.
+        self.set_timer(
+            0.05, lambda: self.query_one(VerticalScroll).scroll_end(animate=False)
+        )
 
     @on(UserInput.Submitted)
-    def handle_input(self, event: UserInput.Submitted) -> None:
+    async def handle_input(self, event: UserInput.Submitted) -> None:
         """Handle input from the user.
 
         Args:
@@ -90,7 +99,10 @@ class Main(Screen[None]):
         """
         if event.value:
             self.query_one(UserInput).text = ""
-            self.process_input(event.value)
+            if event.value.startswith(self._COMMAND_PREFIX):
+                await self.process_command(event.value[1:].lower())
+            else:
+                self.process_input(event.value)
 
     def _save_conversation(self) -> None:
         """Save the current conversation."""
@@ -99,6 +111,13 @@ class Main(Screen[None]):
             if isinstance(widget, (User, Agent)):
                 conversation.append({"role": widget.ROLE, "content": widget.raw_text})
         (conversations_dir() / self._CONVERSATION_FILE).write_text(dumps(conversation))
+
+    async def process_command(self, command: str) -> None:
+        """Process a command."""
+        if command == "new":
+            self._conversation = []
+            await self.query_one(VerticalScroll).remove_children()
+            self.notify("Conversation cleared")
 
     @work
     async def process_input(self, text: str) -> None:
