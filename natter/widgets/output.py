@@ -1,6 +1,10 @@
 """Widgets for showing the output."""
 
 ##############################################################################
+# Python imports.
+from typing import Final
+
+##############################################################################
 # Textual imports.
 from textual.await_complete import AwaitComplete
 from textual.widgets import Label, Markdown
@@ -9,6 +13,9 @@ from textual.widgets import Label, Markdown
 ##############################################################################
 class Agent(Markdown):
     """A widget to show agent chat."""
+
+    ROLE: Final[str] = "assistant"
+    """The role of this output."""
 
     DEFAULT_CSS = """
     Agent {
@@ -48,6 +55,9 @@ class Agent(Markdown):
 ##############################################################################
 class User(Label):
     """A widget to show user chat."""
+
+    ROLE: Final[str] = "user"
+    """The role of this output."""
 
     DEFAULT_CSS = """
     User {

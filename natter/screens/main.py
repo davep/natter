@@ -3,6 +3,8 @@
 ##############################################################################
 # Python imports.
 from asyncio import iscoroutine
+from json import dumps, loads
+from typing import Final
 
 ##############################################################################
 # httpx imports.
@@ -23,6 +25,7 @@ from textual.widgets import LoadingIndicator
 
 ##############################################################################
 # Local imports.
+from ..data import conversations_dir
 from ..widgets import Agent, Error, User, UserInput
 
 
@@ -53,6 +56,9 @@ class Main(Screen[None]):
 
     AUTO_FOCUS = "UserInput"
 
+    _CONVERSATION_FILE: Final[str] = "conversation.json"
+    """The name of the file to store the ongoing conversation in."""
+
     _client: var[AsyncClient] = var(AsyncClient)
     """The Ollama client."""
 
@@ -62,6 +68,18 @@ class Main(Screen[None]):
     def compose(self) -> ComposeResult:
         yield VerticalScroll()
         yield UserInput()
+
+    def on_mount(self) -> None:
+        """Reload any previous conversation."""
+        if not (source := (conversations_dir() / self._CONVERSATION_FILE)).exists():
+            return
+        self._conversation = loads(source.read_text())
+        self.query_one(VerticalScroll).mount_all(
+            [
+                {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
+                for part in self._conversation
+            ]
+        )
 
     @on(UserInput.Submitted)
     def handle_input(self, event: UserInput.Submitted) -> None:
@@ -74,6 +92,14 @@ class Main(Screen[None]):
             self.query_one(UserInput).text = ""
             self.process_input(event.value)
 
+    def _save_conversation(self) -> None:
+        """Save the current conversation."""
+        conversation: list[dict[str, str]] = []
+        for widget in self.query_one(VerticalScroll).children:
+            if isinstance(widget, (User, Agent)):
+                conversation.append({"role": widget.ROLE, "content": widget.raw_text})
+        (conversations_dir() / self._CONVERSATION_FILE).write_text(dumps(conversation))
+
     @work
     async def process_input(self, text: str) -> None:
         """Process the input from the user.
@@ -85,9 +111,10 @@ class Main(Screen[None]):
             [User(text), agent := Agent(), loading := LoadingIndicator()]
         )
         output.scroll_end()
+        self._conversation.append({"role": "user", "content": text})
         chat = self._client.chat(
             model="llama3",
-            messages=[*self._conversation, {"role": "user", "content": text}],
+            messages=self._conversation,
             stream=True,
         )
         assert iscoroutine(chat)
@@ -99,6 +126,7 @@ class Main(Screen[None]):
                 output.scroll_end()
                 if part["message"]["content"]:
                     self._conversation.append(part["message"])
+            self._save_conversation()
         except (ResponseError, ConnectError) as error:
             await agent.remove()
             self.notify(str(error), title="Ollama error", severity="error")
