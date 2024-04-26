@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 ollama = "*"
 textual = "*"
+xdg-base-dirs = "*"
 
 [dev-packages]
 pre-commit = "*"
