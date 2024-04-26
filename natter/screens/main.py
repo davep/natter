@@ -118,6 +118,12 @@ class Main(Screen[None]):
             self._conversation = []
             await self.query_one(VerticalScroll).remove_children()
             self.notify("Conversation cleared")
+        else:
+            self.notify(
+                f"'[dim]{command}[/]' is an unknown command",
+                title="Unknown command",
+                severity="error",
+            )
 
     @work
     async def process_input(self, text: str) -> None:
