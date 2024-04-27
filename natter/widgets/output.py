@@ -78,12 +78,14 @@ class User(Label):
 
 
 ##############################################################################
-class Error(User):
+class Error(Label):
     """A widget to show an error."""
 
     DEFAULT_CSS = """
     Error {
         background: $error;
+        width: 1fr;
+        padding: 1 2;
     }
     """
 
