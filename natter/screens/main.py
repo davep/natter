@@ -22,8 +22,6 @@ from textual.reactive import var
 from textual.screen import Screen
 from textual.widgets import LoadingIndicator
 
-from natter.widgets import user_input
-
 ##############################################################################
 # Local imports.
 from ..data import conversations_dir
