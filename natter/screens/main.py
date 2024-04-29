@@ -200,6 +200,8 @@ class Main(Screen[None]):
         if self.focused != (user_input := self.query_one(UserInput)):
             user_input.focus()
             self.query_one(Output).scroll_end(animate=False)
+        elif self.focused == user_input:
+            self.app.exit()
 
 
 ### main.py ends here
