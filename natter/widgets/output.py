@@ -18,7 +18,7 @@ class Output(VerticalScroll, can_focus=False):
     """Container for displaying the output."""
 
     DEFAULT_CSS = """
-    VerticalScroll {
+    Output {
         background: $primary-background;
     }
     """
