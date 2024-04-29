@@ -47,6 +47,10 @@ class Main(Screen[None]):
 
     AUTO_FOCUS = "UserInput"
 
+    BINDINGS = [
+        ("escape", "jump_to_input"),
+    ]
+
     _COMMAND_PREFIX: Final[str] = "/"
     """The prefix for commands."""
 
@@ -190,6 +194,12 @@ class Main(Screen[None]):
         target.write_text(document)
 
         self.notify(str(target), title="Saved")
+
+    def action_jump_to_input(self) -> None:
+        """Jump to the input and scroll the output to the end."""
+        if self.focused != (user_input := self.query_one(UserInput)):
+            user_input.focus()
+            self.query_one(Output).scroll_end(animate=False)
 
 
 ### main.py ends here
