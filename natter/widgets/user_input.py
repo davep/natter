@@ -23,10 +23,16 @@ class UserInput(TextArea):
     UserInput {
         background: $secondary-background;
         padding: 1;
+        border: none;
+        border-left: blank;
         height: auto;
         max-height: 25%;
         &> .text-area--cursor-line {
             background: initial;
+        }
+        &:focus {
+            border: none;
+            border-left: thick $primary;
         }
     }
     """

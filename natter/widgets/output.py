@@ -7,11 +7,23 @@ from typing import Final
 ##############################################################################
 # Textual imports.
 from textual.await_complete import AwaitComplete
+from textual.containers import VerticalScroll
 from textual.widgets import Label, Markdown
 
 
 ##############################################################################
-class Agent(Markdown):
+class Output(VerticalScroll, can_focus=False):
+    """Container for displaying the output."""
+
+    DEFAULT_CSS = """
+    VerticalScroll {
+        background: $primary-background;
+    }
+    """
+
+
+##############################################################################
+class Agent(Markdown, can_focus=True):
     """A widget to show agent chat."""
 
     ROLE: Final[str] = "assistant"
@@ -22,9 +34,14 @@ class Agent(Markdown):
         background: $primary-background;
         margin: 0;
         padding: 1 2;
+        border: none;
+        border-left: blank;
         MarkdownFence {
             margin: 1 2;
             max-height: initial;
+        }
+        &:focus {
+            border-left: thick $primary;
         }
     }
     """
@@ -53,7 +70,7 @@ class Agent(Markdown):
 
 
 ##############################################################################
-class User(Label):
+class User(Label, can_focus=True):
     """A widget to show user chat."""
 
     ROLE: Final[str] = "user"
@@ -64,6 +81,11 @@ class User(Label):
         background: $secondary-background;
         width: 1fr;
         padding: 1 2;
+        border: none;
+        border-left: blank;
+        &:focus {
+            border-left: thick $primary;
+        }
     }
     """
 
@@ -86,6 +108,8 @@ class Error(Label):
         background: $error;
         width: 1fr;
         padding: 1 2;
+        border: none;
+        border-left: blank;
     }
     """
 

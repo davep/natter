@@ -18,7 +18,6 @@ from ollama import AsyncClient, Message, ResponseError
 # Textual imports.
 from textual import on, work
 from textual.app import ComposeResult
-from textual.containers import VerticalScroll
 from textual.reactive import var
 from textual.screen import Screen
 from textual.widgets import LoadingIndicator
@@ -26,7 +25,7 @@ from textual.widgets import LoadingIndicator
 ##############################################################################
 # Local imports.
 from ..data import conversations_dir
-from ..widgets import Agent, Error, User, UserInput
+from ..widgets import Agent, Error, Output, User, UserInput
 
 
 ##############################################################################
@@ -34,18 +33,6 @@ class Main(Screen[None]):
     """The main screen for the application."""
 
     CSS = """
-    VerticalScroll {
-        background: $primary-background;
-    }
-
-    VerticalScroll, UserInput {
-        border: none;
-        border-left: blank;
-        &:focus {
-            border-left: thick $primary;
-        }
-    }
-
     LoadingIndicator {
         width: 1fr;
         height: auto;
@@ -75,7 +62,7 @@ class Main(Screen[None]):
             self._conversation = loads(source.read_text())
 
     def compose(self) -> ComposeResult:
-        yield VerticalScroll(
+        yield Output(
             *[
                 {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
                 for part in self._conversation
@@ -85,7 +72,7 @@ class Main(Screen[None]):
 
     async def on_mount(self) -> None:
         """Settle the UI on startup."""
-        self.query_one(VerticalScroll).scroll_end(animate=False)
+        self.query_one(Output).scroll_end(animate=False)
 
     @on(UserInput.Submitted)
     async def handle_input(self, event: UserInput.Submitted) -> None:
@@ -104,7 +91,7 @@ class Main(Screen[None]):
     def _save_conversation(self) -> None:
         """Save the current conversation."""
         conversation: list[dict[str, str]] = []
-        for widget in self.query_one(VerticalScroll).children:
+        for widget in self.query_one(Output).children:
             if isinstance(widget, (User, Agent)):
                 conversation.append({"role": widget.ROLE, "content": widget.raw_text})
         (conversations_dir() / self._CONVERSATION_FILE).write_text(dumps(conversation))
@@ -113,7 +100,7 @@ class Main(Screen[None]):
         """Process a command."""
         if command == "new":
             self._conversation = []
-            await self.query_one(VerticalScroll).remove_children()
+            await self.query_one(Output).remove_children()
             self.notify("Conversation cleared")
         elif command == "quit":
             self.app.exit()
@@ -131,7 +118,7 @@ class Main(Screen[None]):
         Args:
             text: The text to process.
         """
-        await (output := self.query_one(VerticalScroll)).mount_all(
+        await (output := self.query_one(Output)).mount_all(
             [User(text), agent := Agent(), loading := LoadingIndicator()]
         )
         output.scroll_end()
