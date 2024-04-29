@@ -115,6 +115,8 @@ class Main(Screen[None]):
             self._conversation = []
             await self.query_one(VerticalScroll).remove_children()
             self.notify("Conversation cleared")
+        elif command == "quit":
+            self.app.exit()
         else:
             self.notify(
                 f"'[dim]{command}[/]' is an unknown command",
