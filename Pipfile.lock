@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "03e4d1902d160d573354ad85624292bfe9ad318a3d4fc2ef5370e682fc0e8779"
+            "sha256": "8f468eb4ecba13cc31de4a9ef0841c08f96b038c082548dbd4d1e51ceda52f95"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -139,6 +139,14 @@
             "index": "pypi",
             "markers": "python_version >= '3.8' and python_version < '4.0'",
             "version": "==0.58.0"
+        },
+        "textual-fspicker": {
+            "hashes": [
+                "sha256:03a4ea8eb9384e63002a857d288ec6b9e8f67282d439d166a090be256e9ccc8b"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.7'",
+            "version": "==0.0.10"
         },
         "typing-extensions": {
             "hashes": [
@@ -422,11 +430,11 @@
         },
         "keyring": {
             "hashes": [
-                "sha256:26fc12e6a329d61d24aa47b22a7c5c3f35753df7d8f2860973cf94f4e1fb3427",
-                "sha256:7230ea690525133f6ad536a9b5def74a4bd52642abe594761028fc044d7c7893"
+                "sha256:19f17d40335444aab84b19a0d16a77ec0758a9c384e3446ae2ed8bd6d53b67a5",
+                "sha256:7045f367268ce42dba44745050164b431e46f6e92f99ef2937dfadaef368d8cf"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==25.1.0"
+            "version": "==25.2.0"
         },
         "markdown-it-py": {
             "extras": [
@@ -595,11 +603,11 @@
         },
         "pyproject-hooks": {
             "hashes": [
-                "sha256:283c11acd6b928d2f6a7c73fa0d01cb2bdc5f07c57a2eeb6e83d5e56b97976f8",
-                "sha256:f271b298b97f5955d53fb12b72c1fb1948c22c1a6b70b315c54cedaca0264ef5"
+                "sha256:4b37730834edbd6bd37f26ece6b44802fb1c1ee2ece0e54ddff8bfc06db86965",
+                "sha256:7ceeefe9aec63a1064c18d939bdc3adf2d8aa1988a510afec15151578b232aa2"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.0.0"
+            "version": "==1.1.0"
         },
         "pyyaml": {
             "hashes": [

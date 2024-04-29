@@ -23,6 +23,10 @@ from textual.screen import Screen
 from textual.widgets import LoadingIndicator
 
 ##############################################################################
+# Textual-fspicker imports.
+from textual_fspicker import FileSave, Filters
+
+##############################################################################
 # Local imports.
 from ..data import conversations_dir
 from ..widgets import Agent, Error, Output, User, UserInput
@@ -102,6 +106,8 @@ class Main(Screen[None]):
             self._conversation = []
             await self.query_one(Output).remove_children()
             self.notify("Conversation cleared")
+        elif command == "save":
+            self._save_conversation_text()
         elif command == "quit":
             self.app.exit()
         else:
@@ -152,6 +158,38 @@ class Main(Screen[None]):
         user_input = self.query_one(UserInput)
         user_input.text = event.text
         user_input.focus()
+
+    @work
+    async def _save_conversation_text(self) -> None:
+        """Save the conversation as a Markdown document."""
+        if (
+            target := await self.app.push_screen_wait(
+                FileSave(
+                    ".",
+                    filters=Filters(
+                        (
+                            "Markdown",
+                            lambda p: p.suffix.lower() in (".md", ".markdown"),
+                        ),
+                        ("Text", lambda p: p.suffix.lower() in (".txt", ".text")),
+                        ("Any", lambda _: True),
+                    ),
+                )
+            )
+        ) is None:
+            return
+
+        if not target.suffix:
+            target = target.with_suffix(".md")
+
+        document = ""
+        for widget in self.query_one(Output).children:
+            if isinstance(widget, (User, Agent)):
+                document += f"# {widget.__class__.__name__}\n\n{widget.raw_text}\n\n"
+
+        target.write_text(document)
+
+        self.notify(str(target), title="Saved")
 
 
 ### main.py ends here
