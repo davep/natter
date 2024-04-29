@@ -2,12 +2,14 @@
 
 ##############################################################################
 # Python imports.
+from dataclasses import dataclass
 from typing import Final
 
 ##############################################################################
 # Textual imports.
 from textual.await_complete import AwaitComplete
 from textual.containers import VerticalScroll
+from textual.message import Message
 from textual.widgets import Label, Markdown
 
 
@@ -89,6 +91,10 @@ class User(Label, can_focus=True):
     }
     """
 
+    BINDINGS = [
+        ("enter", "edit"),
+    ]
+
     def __init__(self, output: str) -> None:
         super().__init__(output)
         self._raw_text = output
@@ -97,6 +103,17 @@ class User(Label, can_focus=True):
     def raw_text(self) -> str:
         """The raw text."""
         return self._raw_text
+
+    @dataclass
+    class Edit(Message):
+        """Message sent when the user wants to edit their input."""
+
+        text: str
+        """The text the user wants to edit."""
+
+    def action_edit(self) -> None:
+        """Post a message providing text to edit."""
+        self.post_message(self.Edit(self.raw_text))
 
 
 ##############################################################################

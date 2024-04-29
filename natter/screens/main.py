@@ -22,6 +22,8 @@ from textual.reactive import var
 from textual.screen import Screen
 from textual.widgets import LoadingIndicator
 
+from natter.widgets import user_input
+
 ##############################################################################
 # Local imports.
 from ..data import conversations_dir
@@ -145,6 +147,13 @@ class Main(Screen[None]):
             output.scroll_end()
         finally:
             await loading.remove()
+
+    @on(User.Edit)
+    def edit_input(self, event: User.Edit) -> None:
+        self.query_one(Output).scroll_end(animate=False)
+        user_input = self.query_one(UserInput)
+        user_input.text = event.text
+        user_input.focus()
 
 
 ### main.py ends here
