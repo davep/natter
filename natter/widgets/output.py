@@ -48,6 +48,10 @@ class Agent(Markdown, can_focus=True):
     }
     """
 
+    BINDINGS = [
+        ("c", "copy"),
+    ]
+
     def update(self, markdown: str) -> AwaitComplete:
         """Update the document with new Markdown.
 
@@ -69,6 +73,11 @@ class Agent(Markdown, can_focus=True):
     def raw_text(self) -> str:
         """The raw text."""
         return self._markdown
+
+    def action_copy(self) -> None:
+        """Copy the raw text of this widget to the clipboard."""
+        self.app.copy_to_clipboard(self.raw_text)
+        self.notify("Agent output copied to the clipboard", title="Copied")
 
 
 ##############################################################################
@@ -93,6 +102,7 @@ class User(Label, can_focus=True):
 
     BINDINGS = [
         ("enter", "edit"),
+        ("c", "copy"),
     ]
 
     def __init__(self, output: str) -> None:
@@ -114,6 +124,11 @@ class User(Label, can_focus=True):
     def action_edit(self) -> None:
         """Post a message providing text to edit."""
         self.post_message(self.Edit(self.raw_text))
+
+    def action_copy(self) -> None:
+        """Copy the raw text of this widget to the clipboard."""
+        self.app.copy_to_clipboard(self.raw_text)
+        self.notify("User input copied to the clipboard", title="Copied")
 
 
 ##############################################################################
