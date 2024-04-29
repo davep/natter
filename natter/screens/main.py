@@ -68,27 +68,24 @@ class Main(Screen[None]):
     _conversation: var[list[Message]] = var(list)
     """The ongoing conversation."""
 
-    def compose(self) -> ComposeResult:
-        yield VerticalScroll()
-        yield UserInput()
+    def __init__(self) -> None:
+        """Initialise the main screen."""
+        super().__init__()
+        if (source := (conversations_dir() / self._CONVERSATION_FILE)).exists():
+            self._conversation = loads(source.read_text())
 
-    async def on_mount(self) -> None:
-        """Reload any previous conversation."""
-        if not (source := (conversations_dir() / self._CONVERSATION_FILE)).exists():
-            return
-        self._conversation = loads(source.read_text())
-        await self.query_one(VerticalScroll).mount_all(
-            [
+    def compose(self) -> ComposeResult:
+        yield VerticalScroll(
+            *[
                 {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
                 for part in self._conversation
             ]
         )
-        # Scrolling to the end feels like it should work here, but even with
-        # call_later it doesn't work; it needs a timer for some reason.
-        # TODO: look into if this is supposed to be the case or not.
-        self.set_timer(
-            0.05, lambda: self.query_one(VerticalScroll).scroll_end(animate=False)
-        )
+        yield UserInput()
+
+    async def on_mount(self) -> None:
+        """Settle the UI on startup."""
+        self.query_one(VerticalScroll).scroll_end(animate=False)
 
     @on(UserInput.Submitted)
     async def handle_input(self, event: UserInput.Submitted) -> None:
