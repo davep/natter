@@ -72,7 +72,7 @@ class Agent(Markdown, can_focus=True):
     @property
     def raw_text(self) -> str:
         """The raw text."""
-        return self._markdown
+        return self._markdown or ""
 
     def action_copy(self) -> None:
         """Copy the raw text of this widget to the clipboard."""
