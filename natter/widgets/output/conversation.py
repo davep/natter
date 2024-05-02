@@ -78,6 +78,7 @@ class Conversation(VerticalScroll, can_focus=False):
             exc_val: BaseException | None,
             exc_traceback: TracebackType | None,
         ) -> None:
+            del exc_type, exc_val, exc_traceback
             await self._loading.remove()
 
     def interaction(self, user_input: str) -> Interaction:
