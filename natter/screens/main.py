@@ -163,6 +163,10 @@ class Main(Screen[None]):
         if (target := await SaveConversation.get_filename(self)) is None:
             return
 
+        # If the user didn't give an extension, add a default.
+        if not target.suffix:
+            target = target.with_suffix(".md")
+
         # Gather up the content of the conversation as a Markdown document.
         document = ""
         for widget in self.query_one(Conversation).children:
@@ -171,7 +175,7 @@ class Main(Screen[None]):
 
         # Save the Markdown to the target file, adding a 'md' extension if
         # no extension was specified.
-        (target if target.suffix else target.with_suffix(".md")).write_text(document)
+        target.write_text(document)
 
         # Let the user know the save happened.
         self.notify(str(target), title="Saved")
