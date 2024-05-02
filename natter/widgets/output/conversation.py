@@ -82,6 +82,14 @@ class Conversation(VerticalScroll, can_focus=False):
             await self._loading.remove()
 
     def interaction(self, user_input: str) -> Interaction:
+        """Create an interaction within the conversation.
+
+        Args:
+            user_input: The input from the user.
+
+        Returns:
+            An `Interaction` context manager.
+        """
         return self.Interaction(self, user_input)
 
 
