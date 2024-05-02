@@ -1,12 +1,14 @@
-"""The widgets for the application."""
+"""Widgets related to showing the output."""
 
 ##############################################################################
 # Local imports.
-from .output import Agent, Conversation, Error, User
-from .user_input import UserInput
+from .agent import Agent
+from .conversation import Conversation
+from .error import Error
+from .user import User
 
 ##############################################################################
 # Exports.
-__all__ = ["Agent", "Conversation", "Error", "User", "UserInput"]
+__all__ = ["Agent", "Error", "Conversation", "User"]
 
 ### __init__.py ends here

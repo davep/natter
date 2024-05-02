@@ -29,7 +29,7 @@ from textual_fspicker import FileSave, Filters
 ##############################################################################
 # Local imports.
 from ..data import conversations_dir
-from ..widgets import Agent, Error, Output, User, UserInput
+from ..widgets import Agent, Conversation, Error, User, UserInput
 
 
 ##############################################################################
@@ -70,7 +70,7 @@ class Main(Screen[None]):
             self._conversation = loads(source.read_text())
 
     def compose(self) -> ComposeResult:
-        yield Output(
+        yield Conversation(
             *[
                 {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
                 for part in self._conversation
@@ -80,7 +80,7 @@ class Main(Screen[None]):
 
     async def on_mount(self) -> None:
         """Settle the UI on startup."""
-        self.query_one(Output).scroll_end(animate=False)
+        self.query_one(Conversation).scroll_end(animate=False)
 
     @on(UserInput.Submitted)
     async def handle_input(self, event: UserInput.Submitted) -> None:
@@ -99,7 +99,7 @@ class Main(Screen[None]):
     def _save_conversation(self) -> None:
         """Save the current conversation."""
         conversation: list[dict[str, str]] = []
-        for widget in self.query_one(Output).children:
+        for widget in self.query_one(Conversation).children:
             if isinstance(widget, (User, Agent)):
                 conversation.append({"role": widget.ROLE, "content": widget.raw_text})
         (conversations_dir() / self._CONVERSATION_FILE).write_text(dumps(conversation))
@@ -108,7 +108,7 @@ class Main(Screen[None]):
         """Process a command."""
         if command == "new":
             self._conversation = []
-            await self.query_one(Output).remove_children()
+            await self.query_one(Conversation).remove_children()
             self.notify("Conversation cleared")
         elif command == "save":
             self._save_conversation_text()
@@ -128,7 +128,7 @@ class Main(Screen[None]):
         Args:
             text: The text to process.
         """
-        await (output := self.query_one(Output)).mount_all(
+        await (output := self.query_one(Conversation)).mount_all(
             [User(text), agent := Agent(), loading := LoadingIndicator()]
         )
         output.scroll_end()
@@ -163,7 +163,7 @@ class Main(Screen[None]):
         Args:
             event: The event to handle.
         """
-        self.query_one(Output).scroll_end(animate=False)
+        self.query_one(Conversation).scroll_end(animate=False)
         user_input = self.query_one(UserInput)
         user_input.text = event.text
         user_input.focus()
@@ -192,7 +192,7 @@ class Main(Screen[None]):
             target = target.with_suffix(".md")
 
         document = ""
-        for widget in self.query_one(Output).children:
+        for widget in self.query_one(Conversation).children:
             if isinstance(widget, (User, Agent)):
                 document += f"# {widget.__class__.__name__}\n\n{widget.raw_text}\n\n"
 
@@ -204,7 +204,7 @@ class Main(Screen[None]):
         """Jump to the input and scroll the output to the end."""
         if self.focused != (user_input := self.query_one(UserInput)):
             user_input.focus()
-            self.query_one(Output).scroll_end(animate=False)
+            self.query_one(Conversation).scroll_end(animate=False)
         elif self.focused == user_input:
             self.app.exit()
 
