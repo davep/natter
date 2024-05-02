@@ -161,6 +161,8 @@ class Main(Screen[None]):
     @work
     async def _save_conversation_text(self) -> None:
         """Save the conversation as a Markdown document."""
+        # Prompt the user with a save dialog, to get the name of a file to
+        # save to.
         if (
             target := await self.app.push_screen_wait(
                 FileSave(
@@ -178,16 +180,17 @@ class Main(Screen[None]):
         ) is None:
             return
 
-        if not target.suffix:
-            target = target.with_suffix(".md")
-
+        # Gather up the content of the conversation as a Markdown document.
         document = ""
         for widget in self.query_one(Conversation).children:
             if isinstance(widget, (User, Agent)):
                 document += f"# {widget.__class__.__name__}\n\n{widget.raw_text}\n\n"
 
-        target.write_text(document)
+        # Save the Markdown to the target file, adding a 'md' extension if
+        # no extension was specified.
+        (target if target.suffix else target.with_suffix(".md")).write_text(document)
 
+        # Let the user know the save happened.
         self.notify(str(target), title="Saved")
 
     def action_escape(self) -> None:
