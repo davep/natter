@@ -20,7 +20,6 @@ from textual import on, work
 from textual.app import ComposeResult
 from textual.reactive import var
 from textual.screen import Screen
-from textual.widgets import LoadingIndicator
 
 ##############################################################################
 # Textual-fspicker imports.
@@ -29,7 +28,7 @@ from textual_fspicker import FileSave, Filters
 ##############################################################################
 # Local imports.
 from ..data import conversations_dir
-from ..widgets import Agent, Conversation, Error, User, UserInput
+from ..widgets import Agent, Conversation, User, UserInput
 
 
 ##############################################################################
@@ -128,10 +127,6 @@ class Main(Screen[None]):
         Args:
             text: The text to process.
         """
-        await (output := self.query_one(Conversation)).mount_all(
-            [User(text), agent := Agent(), loading := LoadingIndicator()]
-        )
-        output.scroll_end()
         self._conversation.append({"role": "user", "content": text})
         chat = self._client.chat(
             model="llama3",
@@ -139,22 +134,16 @@ class Main(Screen[None]):
             stream=True,
         )
         assert iscoroutine(chat)
-        reply = ""
-        try:
-            async for part in await chat:
-                reply += part["message"]["content"]
-                await agent.update(reply)
-                output.scroll_end()
-                if part["message"]["content"]:
-                    self._conversation.append(part["message"])
-            self._save_conversation()
-        except (ResponseError, ConnectError) as error:
-            await agent.remove()
-            self.notify(str(error), title="Ollama error", severity="error")
-            await output.mount(Error(str(error)))
-            output.scroll_end()
-        finally:
-            await loading.remove()
+        async with self.query_one(Conversation).interaction(text) as interaction:
+            try:
+                async for part in await chat:
+                    if part["message"]["content"]:
+                        await interaction.update_response(part["message"]["content"])
+                        self._conversation.append(part["message"])
+            except (ResponseError, ConnectError) as error:
+                await interaction.abandon(str(error))
+            else:
+                self._save_conversation()
 
     @on(User.Edit)
     def edit_input(self, event: User.Edit) -> None:
