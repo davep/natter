@@ -9,6 +9,10 @@ from __future__ import annotations
 from types import TracebackType
 
 ##############################################################################
+# Ollama imports.
+from ollama import Message
+
+##############################################################################
 # Textual imports.
 from textual.containers import VerticalScroll
 from textual.widgets import LoadingIndicator
@@ -33,6 +37,19 @@ class Conversation(VerticalScroll, can_focus=False):
         background: $primary-background;
     }
     """
+
+    def __init__(self, initial_conversation: list[Message] | None = None) -> None:
+        """Initialise the conversation.
+
+        Args:
+            initial_conversation: The initial conversation to show.
+        """
+        super().__init__(
+            *[
+                {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
+                for part in initial_conversation or []
+            ]
+        )
 
     class Interaction:
         """Context manager for an instance of interaction in the conversation."""

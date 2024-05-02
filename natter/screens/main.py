@@ -24,7 +24,7 @@ from textual.screen import Screen
 ##############################################################################
 # Local imports.
 from ..data import conversations_dir
-from ..widgets import Agent, Conversation, User, UserInput
+from ..widgets import Conversation, User, UserInput
 from .save_conversation import SaveConversation
 
 
@@ -66,12 +66,7 @@ class Main(Screen[None]):
             self._conversation = loads(source.read_text())
 
     def compose(self) -> ComposeResult:
-        yield Conversation(
-            *[
-                {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
-                for part in self._conversation
-            ]
-        )
+        yield Conversation(self._conversation)
         yield UserInput()
 
     async def on_mount(self) -> None:
