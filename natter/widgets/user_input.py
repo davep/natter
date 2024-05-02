@@ -62,6 +62,7 @@ class UserInput(TextArea):
             event.prevent_default()
 
     def action_soft_enter(self) -> None:
+        """Action for create a new line."""
         self.insert("\n")
 
 
