@@ -167,15 +167,9 @@ class Main(Screen[None]):
         if not target.suffix:
             target = target.with_suffix(".md")
 
-        # Gather up the content of the conversation as a Markdown document.
-        document = ""
-        for widget in self.query_one(Conversation).children:
-            if isinstance(widget, (User, Agent)):
-                document += f"# {widget.__class__.__name__}\n\n{widget.raw_text}\n\n"
-
         # Save the Markdown to the target file, adding a 'md' extension if
         # no extension was specified.
-        target.write_text(document)
+        target.write_text(self.query_one(Conversation).markdown)
 
         # Let the user know the save happened.
         self.notify(str(target), title="Saved")
