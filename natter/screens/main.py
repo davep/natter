@@ -105,20 +105,21 @@ class Main(Screen[None]):
 
     async def process_command(self, command: str) -> None:
         """Process a command."""
-        if command == "new":
-            self._conversation = []
-            await self.query_one(Conversation).remove_children()
-            self.notify("Conversation cleared")
-        elif command == "save":
-            self._save_conversation_text()
-        elif command == "quit":
-            self.app.exit()
-        else:
-            self.notify(
-                f"'[dim]{command}[/]' is an unknown command",
-                title="Unknown command",
-                severity="error",
-            )
+        match command:
+            case "new":
+                self._conversation = []
+                await self.query_one(Conversation).remove_children()
+                self.notify("Conversation cleared")
+            case "save":
+                self._save_conversation_text()
+            case "quit":
+                self.app.exit()
+            case _:
+                self.notify(
+                    f"'[dim]{command}[/]' is an unknown command",
+                    title="Unknown command",
+                    severity="error",
+                )
 
     @work
     async def process_input(self, text: str) -> None:
