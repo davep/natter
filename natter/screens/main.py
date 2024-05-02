@@ -66,7 +66,7 @@ class Main(Screen[None]):
     def __init__(self) -> None:
         """Initialise the main screen."""
         super().__init__()
-        if (source := (conversations_dir() / self._CONVERSATION_FILE)).exists():
+        if (source := conversations_dir() / self._CONVERSATION_FILE).exists():
             self._conversation = loads(source.read_text())
 
     def compose(self) -> ComposeResult:
