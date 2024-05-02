@@ -167,8 +167,7 @@ class Main(Screen[None]):
         if not target.suffix:
             target = target.with_suffix(".md")
 
-        # Save the Markdown to the target file, adding a 'md' extension if
-        # no extension was specified.
+        # Save the Markdown to the target file.
         target.write_text(self.query_one(Conversation).markdown)
 
         # Let the user know the save happened.
