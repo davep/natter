@@ -83,7 +83,7 @@ class Main(Screen[None]):
         if event.value:
             self.query_one(UserInput).text = ""
             if event.value.startswith(self._COMMAND_PREFIX):
-                await self.process_command(event.value[1:].lower())
+                await self.process_command(event.value[1:].lower().strip())
             else:
                 self.process_input(event.value)
 
