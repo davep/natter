@@ -22,13 +22,10 @@ from textual.reactive import var
 from textual.screen import Screen
 
 ##############################################################################
-# Textual-fspicker imports.
-from textual_fspicker import FileSave, Filters
-
-##############################################################################
 # Local imports.
 from ..data import conversations_dir
 from ..widgets import Agent, Conversation, User, UserInput
+from .save_conversation import SaveConversation
 
 
 ##############################################################################
@@ -163,21 +160,7 @@ class Main(Screen[None]):
         """Save the conversation as a Markdown document."""
         # Prompt the user with a save dialog, to get the name of a file to
         # save to.
-        if (
-            target := await self.app.push_screen_wait(
-                FileSave(
-                    ".",
-                    filters=Filters(
-                        (
-                            "Markdown",
-                            lambda p: p.suffix.lower() in (".md", ".markdown"),
-                        ),
-                        ("Text", lambda p: p.suffix.lower() in (".txt", ".text")),
-                        ("Any", lambda _: True),
-                    ),
-                )
-            )
-        ) is None:
+        if (target := await SaveConversation.get_filename(self)) is None:
             return
 
         # Gather up the content of the conversation as a Markdown document.
