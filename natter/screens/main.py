@@ -94,11 +94,9 @@ class Main(Screen[None]):
 
     def _save_conversation(self) -> None:
         """Save the current conversation."""
-        conversation: list[dict[str, str]] = []
-        for widget in self.query_one(Conversation).children:
-            if isinstance(widget, (User, Agent)):
-                conversation.append({"role": widget.ROLE, "content": widget.raw_text})
-        (conversations_dir() / self._CONVERSATION_FILE).write_text(dumps(conversation))
+        (conversations_dir() / self._CONVERSATION_FILE).write_text(
+            dumps(self.query_one(Conversation).json)
+        )
 
     async def process_command(self, command: str) -> None:
         """Process a command."""

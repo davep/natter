@@ -101,5 +101,14 @@ class Conversation(VerticalScroll, can_focus=False):
                 document += f"# {widget.__class__.__name__}\n\n{widget.raw_text}\n\n"
         return document
 
+    @property
+    def json(self) -> list[dict[str, str]]:
+        """The conversation as a JSON-friendly structure."""
+        conversation: list[dict[str, str]] = []
+        for widget in self.children:
+            if isinstance(widget, (User, Agent)):
+                conversation.append({"role": widget.ROLE, "content": widget.raw_text})
+        return conversation
+
 
 ### conversation.py ends here
