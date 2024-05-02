@@ -158,6 +158,11 @@ class Main(Screen[None]):
 
     @on(User.Edit)
     def edit_input(self, event: User.Edit) -> None:
+        """Make user input available for editing.
+
+        Args:
+            event: The event to handle.
+        """
         self.query_one(Output).scroll_end(animate=False)
         user_input = self.query_one(UserInput)
         user_input.text = event.text
