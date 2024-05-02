@@ -47,7 +47,7 @@ class Main(Screen[None]):
     AUTO_FOCUS = "UserInput"
 
     BINDINGS = [
-        ("escape", "jump_to_input"),
+        ("escape", "escape"),
     ]
 
     _COMMAND_PREFIX: Final[str] = "/"
@@ -189,8 +189,8 @@ class Main(Screen[None]):
 
         self.notify(str(target), title="Saved")
 
-    def action_jump_to_input(self) -> None:
-        """Jump to the input and scroll the output to the end."""
+    def action_escape(self) -> None:
+        """Process the escape request based on current context."""
         if self.focused != (user_input := self.query_one(UserInput)):
             user_input.focus()
             self.query_one(Conversation).scroll_end(animate=False)
