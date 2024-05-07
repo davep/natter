@@ -1,9 +1,11 @@
 """Provides a modal dialog for prompting for a save screen."""
 
 ##############################################################################
-# Textual imports.
+# Python imports.
 from pathlib import Path
 
+##############################################################################
+# Textual imports.
 from textual.screen import Screen
 
 ##############################################################################
