@@ -12,7 +12,7 @@ from httpx import ConnectError
 
 ##############################################################################
 # Ollama imports.
-from ollama import AsyncClient, Message, ResponseError
+from ollama import AsyncClient, ResponseError
 
 ##############################################################################
 # Textual imports.
@@ -23,7 +23,7 @@ from textual.screen import Screen
 
 ##############################################################################
 # Local imports.
-from ..data import conversations_dir
+from ..data import ConversationData, conversations_dir
 from ..widgets import Conversation, User, UserInput
 from .save_conversation import SaveConversation
 
@@ -56,14 +56,14 @@ class Main(Screen[None]):
     _client: var[AsyncClient] = var(AsyncClient)
     """The Ollama client."""
 
-    _conversation: var[list[Message]] = var(list)
+    _conversation: var[ConversationData] = var(ConversationData("Untitled", "llama3"))
     """The ongoing conversation."""
 
     def __init__(self) -> None:
         """Initialise the main screen."""
         super().__init__()
         if (source := conversations_dir() / self._CONVERSATION_FILE).exists():
-            self._conversation = loads(source.read_text())
+            self._conversation = ConversationData.from_json(loads(source.read_text()))
 
     def compose(self) -> ComposeResult:
         yield Conversation(self._conversation)
@@ -90,14 +90,14 @@ class Main(Screen[None]):
     def _save_conversation(self) -> None:
         """Save the current conversation."""
         (conversations_dir() / self._CONVERSATION_FILE).write_text(
-            dumps(self.query_one(Conversation).json)
+            dumps(self._conversation.json)
         )
 
     async def process_command(self, command: str) -> None:
         """Process a command."""
         match command:
             case "new":
-                self._conversation = []
+                self._conversation = ConversationData("Untitled", "llama3")
                 await self.query_one(Conversation).remove_children()
                 self.notify("Conversation cleared")
             case "save":
@@ -118,10 +118,10 @@ class Main(Screen[None]):
         Args:
             text: The text to process.
         """
-        self._conversation.append({"role": "user", "content": text})
+        self._conversation.record({"role": "user", "content": text})
         chat = self._client.chat(
-            model="llama3",
-            messages=self._conversation,
+            model=self._conversation.model,
+            messages=self._conversation.history,
             stream=True,
         )
         assert iscoroutine(chat)
@@ -130,7 +130,7 @@ class Main(Screen[None]):
                 async for part in await chat:
                     if part["message"]["content"]:
                         await interaction.update_response(part["message"]["content"])
-                        self._conversation.append(part["message"])
+                        self._conversation.record(part["message"])
             except (ResponseError, ConnectError) as error:
                 await interaction.abandon(str(error))
             else:

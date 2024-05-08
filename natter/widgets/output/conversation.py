@@ -23,6 +23,7 @@ from typing_extensions import Self
 
 ##############################################################################
 # Local imports.
+from ...data import ConversationData
 from .agent import Agent
 from .error import Error
 from .user import User
@@ -38,7 +39,7 @@ class Conversation(VerticalScroll, can_focus=False):
     }
     """
 
-    def __init__(self, initial_conversation: list[Message] | None = None) -> None:
+    def __init__(self, initial_conversation: ConversationData | None = None) -> None:
         """Initialise the conversation.
 
         Args:
@@ -47,7 +48,11 @@ class Conversation(VerticalScroll, can_focus=False):
         super().__init__(
             *[
                 {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
-                for part in initial_conversation or []
+                for part in (
+                    initial_conversation.history
+                    if initial_conversation is not None
+                    else []
+                )
             ]
         )
 
