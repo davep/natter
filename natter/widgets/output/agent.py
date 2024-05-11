@@ -18,15 +18,9 @@ class Agent(Markdown, can_focus=True):
     Agent {
         background: $primary-background;
         margin: 0;
-        padding: 1 2;
-        border: none;
-        border-left: blank;
         MarkdownFence {
             margin: 1 2;
             max-height: initial;
-        }
-        &:focus {
-            border-left: thick $primary;
         }
     }
     """

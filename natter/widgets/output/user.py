@@ -22,12 +22,6 @@ class User(Label, can_focus=True):
     User {
         background: $secondary-background;
         width: 1fr;
-        padding: 1 2;
-        border: none;
-        border-left: blank;
-        &:focus {
-            border-left: thick $primary;
-        }
     }
     """
 

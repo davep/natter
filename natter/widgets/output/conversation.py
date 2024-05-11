@@ -32,6 +32,14 @@ class Conversation(VerticalScroll, can_focus=False):
     DEFAULT_CSS = """
     Conversation {
         background: $primary-background;
+        User, Agent, Error {
+            padding: 1;
+            border: none;
+            border-left: blank;
+            &:focus {
+                border-left: thick $primary;
+            }
+        }
     }
     """
 

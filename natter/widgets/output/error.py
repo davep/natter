@@ -13,9 +13,6 @@ class Error(Label):
     Error {
         background: $error;
         width: 1fr;
-        padding: 1 2;
-        border: none;
-        border-left: blank;
     }
     """
 
