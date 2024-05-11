@@ -2,9 +2,8 @@
 
 ##############################################################################
 # Python imports.
-from asyncio import iscoroutine
 from json import dumps, loads
-from typing import Final
+from typing import Coroutine, Final
 
 ##############################################################################
 # httpx imports.
@@ -119,12 +118,11 @@ class Main(Screen[None]):
             text: The text to process.
         """
         self._conversation.record({"role": "user", "content": text})
-        chat = self._client.chat(
+        chat: Coroutine = self._client.chat(
             model=self._conversation.model,
             messages=self._conversation.history,
             stream=True,
         )
-        assert iscoroutine(chat)
         async with self.query_one(Conversation).interaction(text) as interaction:
             try:
                 async for part in await chat:
