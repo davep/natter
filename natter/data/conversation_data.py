@@ -7,7 +7,7 @@ from __future__ import annotations
 ##############################################################################
 # Python imports.
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Iterator
 
 ##############################################################################
 # Ollama imports.
@@ -75,6 +75,9 @@ class ConversationData:
             data["model"],
             data["history"],
         )
+
+    def __iter__(self) -> Iterator[Message]:
+        return iter(self.history)
 
 
 ### conversation_data.py ends here

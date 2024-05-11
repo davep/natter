@@ -45,9 +45,7 @@ class Conversation(VerticalScroll, can_focus=False):
             *[
                 {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
                 for part in (
-                    initial_conversation.history
-                    if initial_conversation is not None
-                    else []
+                    initial_conversation if initial_conversation is not None else []
                 )
             ]
         )

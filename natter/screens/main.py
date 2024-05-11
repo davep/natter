@@ -120,7 +120,7 @@ class Main(Screen[None]):
         self._conversation.record({"role": "user", "content": text})
         chat: Coroutine = self._client.chat(
             model=self._conversation.model,
-            messages=self._conversation.history,
+            messages=list(self._conversation),
             stream=True,
         )
         async with self.query_one(Conversation).interaction(text) as interaction:
