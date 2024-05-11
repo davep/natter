@@ -32,6 +32,30 @@ class ConversationData:
     history: list[Message] = field(default_factory=list)
     """The history of the conversation."""
 
+    @staticmethod
+    def is_user(message: Message) -> bool:
+        """Is the given message from the user?
+
+        Args:
+            message: The message to check.
+
+        Returns:
+            `True` if it's from the user, `False` if not.
+        """
+        return message["role"] == "user"
+
+    @staticmethod
+    def is_agent(message: Message) -> bool:
+        """Is the given message from the agent?
+
+        Args:
+            message: The message to check.
+
+        Returns:
+            `True` if it's from the agent, `False` if not.
+        """
+        return message["role"] == "agent"
+
     def record(self, message: Message) -> Self:
         """Record the given message in the history.
 

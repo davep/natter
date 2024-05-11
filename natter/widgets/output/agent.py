@@ -1,8 +1,8 @@
 """Widget that shows the output from the agent."""
 
 ##############################################################################
-# Python imports.
-from typing import Final
+# Ollama imports.
+from ollama import Message
 
 ##############################################################################
 # Textual imports.
@@ -13,9 +13,6 @@ from textual.widgets import Markdown
 ##############################################################################
 class Agent(Markdown, can_focus=True):
     """A widget to show agent chat."""
-
-    ROLE: Final[str] = "assistant"
-    """The role of this output."""
 
     DEFAULT_CSS = """
     Agent {
@@ -37,6 +34,14 @@ class Agent(Markdown, can_focus=True):
     BINDINGS = [
         ("c", "copy"),
     ]
+
+    def __init__(self, output: Message | str = ""):
+        """Initialise the agent output.
+
+        Args:
+            output: Any initial output.
+        """
+        super().__init__(output if isinstance(output, str) else output["content"])
 
     def update(self, markdown: str) -> AwaitComplete:
         """Update the document with new Markdown.

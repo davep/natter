@@ -43,7 +43,7 @@ class Conversation(VerticalScroll, can_focus=False):
         """
         super().__init__(
             *[
-                {User.ROLE: User, Agent.ROLE: Agent}[part["role"]](part["content"])
+                (User if ConversationData.is_user(part) else Agent)(part)
                 for part in (
                     initial_conversation if initial_conversation is not None else []
                 )

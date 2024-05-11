@@ -3,20 +3,20 @@
 ##############################################################################
 # Python imports.
 from dataclasses import dataclass
-from typing import Final
+
+##############################################################################
+# Ollama imports.
+from ollama import Message
 
 ##############################################################################
 # Textual imports.
-from textual.message import Message
+from textual.message import Message as TextualMessage
 from textual.widgets import Label
 
 
 ##############################################################################
 class User(Label, can_focus=True):
     """A widget to show user chat."""
-
-    ROLE: Final[str] = "user"
-    """The role of this output."""
 
     DEFAULT_CSS = """
     User {
@@ -36,9 +36,14 @@ class User(Label, can_focus=True):
         ("c", "copy"),
     ]
 
-    def __init__(self, output: str) -> None:
-        super().__init__(output)
-        self._raw_text = output
+    def __init__(self, output: Message | str) -> None:
+        """Initialise the user's output.
+
+        Args:
+            output: The user's output.
+        """
+        self._raw_text = output if isinstance(output, str) else output["content"]
+        super().__init__(self._raw_text)
 
     @property
     def raw_text(self) -> str:
@@ -46,7 +51,7 @@ class User(Label, can_focus=True):
         return self._raw_text
 
     @dataclass
-    class Edit(Message):
+    class Edit(TextualMessage):
         """Message sent when the user wants to edit their input."""
 
         text: str
