@@ -97,6 +97,7 @@ class Main(Screen[None]):
         match command:
             case "new":
                 self._conversation = ConversationData("Untitled", "llama3")
+                self._save_conversation()
                 await self.query_one(Conversation).remove_children()
                 self.notify("Conversation cleared")
             case "save":
