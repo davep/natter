@@ -160,7 +160,7 @@ class Main(Screen[None]):
             target = target.with_suffix(".md")
 
         # Save the Markdown to the target file.
-        target.write_text(self.query_one(Conversation).markdown)
+        target.write_text(self._conversation.markdown)
 
         # Let the user know the save happened.
         self.notify(str(target), title="Saved")

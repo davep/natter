@@ -84,6 +84,14 @@ class ConversationData:
             "history": self.history,
         }
 
+    @property
+    def markdown(self) -> str:
+        """The content of the conversation as a Markdown document."""
+        return "\n\n".join(
+            f"# {'User' if self.is_user(part) else 'Agent'}\n\n{part['content']}"
+            for part in self
+        )
+
     @classmethod
     def from_json(cls, data: dict[str, Any]) -> ConversationData:
         """Create an instance of the class from JSON data.

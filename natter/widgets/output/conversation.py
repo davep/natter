@@ -108,14 +108,5 @@ class Conversation(VerticalScroll, can_focus=False):
         """
         return self.Interaction(self, user_input)
 
-    @property
-    def markdown(self) -> str:
-        """The content of the conversation as a Markdown document."""
-        document = ""
-        for widget in self.children:
-            if isinstance(widget, (User, Agent)):
-                document += f"# {widget.__class__.__name__}\n\n{widget.raw_text}\n\n"
-        return document
-
 
 ### conversation.py ends here
