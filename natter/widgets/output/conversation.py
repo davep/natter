@@ -74,6 +74,11 @@ class Conversation(VerticalScroll, can_focus=False):
             self._loading = LoadingIndicator()
 
         async def __aenter__(self) -> Self:
+            """Mount the widgets needed for the interaction.
+
+            Mounts the user's input, the space for the agent's reply, and
+            also the loading indicator.
+            """
             await self._conversation.mount_all([self._user, self._agent, self._loading])
             self._conversation.scroll_end()
             return self
@@ -102,6 +107,10 @@ class Conversation(VerticalScroll, can_focus=False):
             exc_val: BaseException | None,
             exc_traceback: TracebackType | None,
         ) -> None:
+            """Clean up at the end of the interaction.
+
+            Removes the loading indicator.
+            """
             del exc_type, exc_val, exc_traceback
             await self._loading.remove()
 
