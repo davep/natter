@@ -111,7 +111,7 @@ class Main(Screen[None]):
                     severity="error",
                 )
 
-    @work
+    @work(exclusive=True)
     async def process_input(self, text: str) -> None:
         """Process the input from the user.
 
