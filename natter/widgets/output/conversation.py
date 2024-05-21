@@ -48,7 +48,7 @@ class Interaction:
         also the loading indicator.
         """
         await self._conversation.mount_all([self._user, self._agent, self._loading])
-        self._conversation.scroll_end()
+        self._loading.anchor()
         return self
 
     async def update_response(self, response: str) -> None:
@@ -58,7 +58,7 @@ class Interaction:
             response: The response to update with.
         """
         await self._agent.update(self._agent.raw_text + response)
-        self._conversation.scroll_end()
+        self._loading.anchor()
 
     async def abandon(self, reason: str) -> None:
         """Abandon the interaction.
@@ -67,7 +67,8 @@ class Interaction:
             reason: The reason to abandon the interaction.
         """
         await self._agent.remove()
-        await self._conversation.mount(Error(reason))
+        await self._conversation.mount(error := Error(reason))
+        error.anchor()
 
     async def __aexit__(
         self,
