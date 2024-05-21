@@ -96,6 +96,7 @@ class Main(Screen[None]):
         """Process a command."""
         match command:
             case "new":
+                self.stop_interaction()
                 self._conversation = ConversationData("Untitled", "llama3")
                 self._save_conversation()
                 await self.query_one(Conversation).remove_children()
@@ -111,7 +112,10 @@ class Main(Screen[None]):
                     severity="error",
                 )
 
-    @work(exclusive=True)
+    _INTERACTION_GROUP: Final[str] = "--natter-interaction"
+    """The name of the worker group for doing interaction with Ollama."""
+
+    @work(exclusive=True, group=_INTERACTION_GROUP)
     async def process_input(self, text: str) -> None:
         """Process the input from the user.
 
@@ -134,6 +138,10 @@ class Main(Screen[None]):
                 await interaction.abandon(str(error))
             else:
                 self._save_conversation()
+
+    def stop_interaction(self) -> None:
+        """Stop any ongoing interaction."""
+        self.workers.cancel_group(self, self._INTERACTION_GROUP)
 
     @on(User.Edit)
     def edit_input(self, event: User.Edit) -> None:
