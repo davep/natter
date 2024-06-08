@@ -111,9 +111,7 @@ class Conversation(VerticalScroll, can_focus=False):
         super().__init__(
             *[
                 (User if ConversationData.is_user(part) else Assistant)(part)
-                for part in (
-                    initial_conversation if initial_conversation is not None else []
-                )
+                for part in initial_conversation or []
             ]
         )
 
