@@ -31,7 +31,7 @@ class SaveConversation(FileSave):
         )
 
     @classmethod
-    async def get_filename(cls, screen: Screen) -> Path | None:
+    async def get_filename(cls, screen: Screen[None]) -> Path | None:
         """Get the filename from the user.
 
         Args:
