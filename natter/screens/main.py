@@ -3,7 +3,7 @@
 ##############################################################################
 # Python imports.
 from json import dumps, loads
-from typing import Coroutine, Final
+from typing import Any, Coroutine, Final
 
 ##############################################################################
 # httpx imports.
@@ -123,7 +123,7 @@ class Main(Screen[None]):
             text: The text to process.
         """
         self._conversation.record({"role": "user", "content": text})
-        chat: Coroutine = self._client.chat(
+        chat: Coroutine[Any, Any, Any] = self._client.chat(
             model=self._conversation.model,
             messages=list(self._conversation),
             stream=True,
