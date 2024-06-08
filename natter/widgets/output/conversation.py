@@ -20,7 +20,7 @@ from typing_extensions import Self
 ##############################################################################
 # Local imports.
 from ...data import ConversationData
-from .agent import Agent
+from .assistant import Assistant
 from .error import Error
 from .user import User
 
@@ -38,26 +38,26 @@ class Interaction:
         """
         self._conversation = conversation
         self._user = User(user_input)
-        self._agent = Agent()
+        self._assistant = Assistant()
         self._loading = LoadingIndicator()
 
     async def __aenter__(self) -> Self:
         """Mount the widgets needed for the interaction.
 
-        Mounts the user's input, the space for the agent's reply, and
+        Mounts the user's input, the space for the assistant's reply, and
         also the loading indicator.
         """
-        await self._conversation.mount_all([self._user, self._agent, self._loading])
+        await self._conversation.mount_all([self._user, self._assistant, self._loading])
         self._loading.anchor()
         return self
 
     async def update_response(self, response: str) -> None:
-        """Update the interaction with the agent's response.
+        """Update the interaction with the assistant's response.
 
         Args:
             response: The response to update with.
         """
-        await self._agent.update(self._agent.raw_text + response)
+        await self._assistant.update(self._assistant.raw_text + response)
         self._loading.anchor()
 
     async def abandon(self, reason: str) -> None:
@@ -66,7 +66,7 @@ class Interaction:
         Args:
             reason: The reason to abandon the interaction.
         """
-        await self._agent.remove()
+        await self._assistant.remove()
         await self._conversation.mount(error := Error(reason))
         error.anchor()
 
@@ -91,7 +91,7 @@ class Conversation(VerticalScroll, can_focus=False):
     DEFAULT_CSS = """
     Conversation {
         background: $primary-background;
-        User, Agent, Error {
+        User, Assistant, Error {
             padding: 1;
             border: none;
             border-left: blank;
@@ -110,7 +110,7 @@ class Conversation(VerticalScroll, can_focus=False):
         """
         super().__init__(
             *[
-                (User if ConversationData.is_user(part) else Agent)(part)
+                (User if ConversationData.is_user(part) else Assistant)(part)
                 for part in (
                     initial_conversation if initial_conversation is not None else []
                 )

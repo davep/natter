@@ -2,13 +2,13 @@
 
 ##############################################################################
 # Local imports.
-from .agent import Agent
+from .assistant import Assistant
 from .conversation import Conversation
 from .error import Error
 from .user import User
 
 ##############################################################################
 # Exports.
-__all__ = ["Agent", "Error", "Conversation", "User"]
+__all__ = ["Assistant", "Error", "Conversation", "User"]
 
 ### __init__.py ends here

@@ -2,11 +2,11 @@
 
 ##############################################################################
 # Local imports.
-from .output import Agent, Conversation, Error, User
+from .output import Assistant, Conversation, Error, User
 from .user_input import UserInput
 
 ##############################################################################
 # Exports.
-__all__ = ["Agent", "Conversation", "Error", "User", "UserInput"]
+__all__ = ["Assistant", "Conversation", "Error", "User", "UserInput"]
 
 ### __init__.py ends here

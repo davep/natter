@@ -45,16 +45,16 @@ class ConversationData:
         return message["role"] == "user"
 
     @staticmethod
-    def is_agent(message: Message) -> bool:
-        """Is the given message from the agent?
+    def is_assistant(message: Message) -> bool:
+        """Is the given message from the assistant?
 
         Args:
             message: The message to check.
 
         Returns:
-            `True` if it's from the agent, `False` if not.
+            `True` if it's from the assistant, `False` if not.
         """
-        return message["role"] == "agent"
+        return message["role"] == "assistant"
 
     def record(self, message: Message) -> Self:
         """Record the given message in the history.
@@ -88,7 +88,7 @@ class ConversationData:
     def markdown(self) -> str:
         """The content of the conversation as a Markdown document."""
         return "\n\n".join(
-            f"# {'User' if self.is_user(part) else 'Agent'}\n\n{part['content']}"
+            f"# {'User' if self.is_user(part) else 'Assistant'}\n\n{part['content']}"
             for part in self
         )
 

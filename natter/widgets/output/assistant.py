@@ -1,4 +1,4 @@
-"""Widget that shows the output from the agent."""
+"""Widget that shows the output from the assistant."""
 
 ##############################################################################
 # Ollama imports.
@@ -11,11 +11,11 @@ from textual.widgets import Markdown
 
 
 ##############################################################################
-class Agent(Markdown, can_focus=True):
-    """A widget to show agent chat."""
+class Assistant(Markdown, can_focus=True):
+    """A widget to show assistant chat."""
 
     DEFAULT_CSS = """
-    Agent {
+    Assistant {
         background: $primary-background;
         margin: 0;
         MarkdownFence {
@@ -30,7 +30,7 @@ class Agent(Markdown, can_focus=True):
     ]
 
     def __init__(self, output: Message | str = ""):
-        """Initialise the agent output.
+        """Initialise the assistant output.
 
         Args:
             output: Any initial output.
@@ -62,7 +62,7 @@ class Agent(Markdown, can_focus=True):
     def action_copy(self) -> None:
         """Copy the raw text of this widget to the clipboard."""
         self.app.copy_to_clipboard(self.raw_text)
-        self.notify("Agent output copied to the clipboard", title="Copied")
+        self.notify("Assistant output copied to the clipboard", title="Copied")
 
 
-### agent.py ends here
+### assistant.py ends here
