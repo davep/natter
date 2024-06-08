@@ -3,7 +3,7 @@
 A wee experimental terminal-based chat client, built to mess around with the
 [Python Ollama library](https://github.com/ollama/ollama-python).
 
-![Natter in action](./img/natter.png)
+![Natter in action](https://raw.githubusercontent.com/davep/natter/main/img/natter.png)
 
 ## Motivation
 
