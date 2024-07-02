@@ -89,7 +89,7 @@ class Main(Screen[None]):
     def _save_conversation(self) -> None:
         """Save the current conversation."""
         (conversations_dir() / self._CONVERSATION_FILE).write_text(
-            dumps(self._conversation.json)
+            dumps(self._conversation.json, indent=4)
         )
 
     async def process_command(self, command: str) -> None:
