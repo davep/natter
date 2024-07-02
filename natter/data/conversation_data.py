@@ -32,6 +32,9 @@ class ConversationData:
     history: list[Message] = field(default_factory=list)
     """The history of the conversation."""
 
+    host: str = ""
+    """The host the conversation is being held with."""
+
     @staticmethod
     def is_user(message: Message) -> bool:
         """Is the given message from the user?
@@ -82,6 +85,7 @@ class ConversationData:
             "title": self.title,
             "model": self.model,
             "history": self.history,
+            "host": self.host,
         }
 
     @property
@@ -102,11 +106,7 @@ class ConversationData:
         Returns:
             A fresh instance of the class with all data loaded.
         """
-        return cls(
-            data["title"],
-            data["model"],
-            data["history"],
-        )
+        return cls(data["title"], data["model"], data["history"], data.get("host", ""))
 
     def __iter__(self) -> Iterator[Message]:
         return iter(self.history)
