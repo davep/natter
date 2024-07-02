@@ -106,7 +106,12 @@ class ConversationData:
         Returns:
             A fresh instance of the class with all data loaded.
         """
-        return cls(data["title"], data["model"], data["history"], data.get("host", ""))
+        return cls(
+            data.get("title", "Untitled"),
+            data.get("model", "llama3"),
+            data.get("history", []),
+            data.get("host", ""),
+        )
 
     def __iter__(self) -> Iterator[Message]:
         return iter(self.history)
