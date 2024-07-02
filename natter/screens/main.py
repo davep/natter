@@ -52,7 +52,7 @@ class Main(Screen[None]):
     _CONVERSATION_FILE: Final[str] = "conversation.json"
     """The name of the file to store the ongoing conversation in."""
 
-    _client: var[AsyncClient] = var(AsyncClient)
+    _client: var[AsyncClient | None] = var(None)
     """The Ollama client."""
 
     _conversation: var[ConversationData] = var(ConversationData("Untitled", "llama3"))
@@ -94,16 +94,25 @@ class Main(Screen[None]):
 
     async def process_command(self, command: str) -> None:
         """Process a command."""
-        match command:
-            case "new":
+        match command.split():
+            case ["new"]:
                 self.stop_interaction()
                 self._conversation = ConversationData("Untitled", "llama3")
                 self._save_conversation()
                 await self.query_one(Conversation).remove_children()
                 self.notify("Conversation cleared")
-            case "save":
+            case ["save"]:
                 self._save_conversation_text()
-            case "quit":
+            case ["host"]:
+                if self._conversation.host:
+                    self.notify(f"Currently connected to {self._conversation.host}")
+                else:
+                    self.notify("Currently connected to the default host")
+            case ["host", host]:
+                self._conversation.host = host
+                self._client = None
+                self.notify(f"Host set to {host}")
+            case ["quit"]:
                 self.app.exit()
             case _:
                 self.notify(
@@ -122,6 +131,8 @@ class Main(Screen[None]):
         Args:
             text: The text to process.
         """
+        if self._client is None:
+            self._client = AsyncClient(self._conversation.host)
         self._conversation.record({"role": "user", "content": text})
         chat: Coroutine[Any, Any, Any] = self._client.chat(
             model=self._conversation.model,
