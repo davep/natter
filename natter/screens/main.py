@@ -97,7 +97,9 @@ class Main(Screen[None]):
         match command.split():
             case ["new"]:
                 self.stop_interaction()
-                self._conversation = ConversationData("Untitled", "llama3")
+                self._conversation = ConversationData(
+                    "Untitled", "llama3", host=self._conversation.host
+                )
                 self._save_conversation()
                 await self.query_one(Conversation).remove_children()
                 self.notify("Conversation cleared")
