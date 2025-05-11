@@ -1,5 +1,76 @@
-[build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+[project]
+name = "natter"
+version = "0.0.4"
+description = "A terminal-based ollama chat interface"
+authors = [
+    { name = "Dave Pearson", email = "davep@davep.org" }
+]
+dependencies = [
+    "ollama>=0.4.8",
+    "textual>=3.2.0",
+    "textual-fspicker>=0.4.1",
+    "xdg-base-dirs>=6.0.2",
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GNU General Public License v3 or later (GPLv3+)" }
+keywords = [
+    "terminal",
+    "tui",
+    "chui",
+    "ai",
+    "llm",
+    "client",
+    "ollama",
+    "chatbot",
+]
+classifiers =[
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Environment :: Console",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet",
+    "Topic :: Terminals",
+    "Typing :: Typed",
+]
 
-### pyproject.toml ends here
+[project.urls]
+Homepage = "https://github.com/davep/natter"
+Repository = "https://github.com/davep/natter"
+Documentation = "https://github.com/davep/natter"
+Source = "https://github.com/davep/natter"
+Issues = "https://github.com/davep/natter/issues"
+Discussions = "https://github.com/davep/natter/discussions"
+
+[project.scripts]
+natter = "natter.__main__:run"
+
+[build-system]
+# https://github.com/astral-sh/rye/issues/1446
+requires = ["hatchling==1.26.3", "hatch-vcs"]
+# requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pre-commit>=4.2.0",
+    "codespell>=2.4.1",
+    "mypy>=1.15.0",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/natter"]
+
+[tool.pyright]
+venvPath="."
+venv=".venv"
+exclude=[".venv"]
