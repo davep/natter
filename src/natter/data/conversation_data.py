@@ -29,14 +29,14 @@ class ConversationData:
     model: str
     """The name of the model in use with this conversation."""
 
-    history: list[Message] = field(default_factory=list)
+    history: list[Message | dict[str, str]] = field(default_factory=list)
     """The history of the conversation."""
 
     host: str = ""
     """The host the conversation is being held with."""
 
     @staticmethod
-    def is_user(message: Message) -> bool:
+    def is_user(message: Message | dict[str, str]) -> bool:
         """Is the given message from the user?
 
         Args:
@@ -48,7 +48,7 @@ class ConversationData:
         return message["role"] == "user"
 
     @staticmethod
-    def is_assistant(message: Message) -> bool:
+    def is_assistant(message: Message | dict[str, str]) -> bool:
         """Is the given message from the assistant?
 
         Args:
@@ -59,7 +59,7 @@ class ConversationData:
         """
         return message["role"] == "assistant"
 
-    def record(self, message: Message) -> Self:
+    def record(self, message: Message | dict[str, str]) -> Self:
         """Record the given message in the history.
 
         Args:
@@ -75,7 +75,7 @@ class ConversationData:
             self.history[-1]["content"] += message["content"]
         else:
             # Otherwise start a new message.
-            self.history.append(message)
+            self.history.append(dict(message))
         return self
 
     @property
@@ -113,7 +113,7 @@ class ConversationData:
             data.get("host", ""),
         )
 
-    def __iter__(self) -> Iterator[Message]:
+    def __iter__(self) -> Iterator[Message | dict[str, str]]:
         return iter(self.history)
 
 

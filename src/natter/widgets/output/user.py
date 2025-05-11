@@ -30,7 +30,7 @@ class User(Label, can_focus=True):
         ("c", "copy"),
     ]
 
-    def __init__(self, output: Message | str) -> None:
+    def __init__(self, output: Message | dict[str, str] | str) -> None:
         """Initialise the user's output.
 
         Args:

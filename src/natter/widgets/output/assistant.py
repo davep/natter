@@ -29,7 +29,7 @@ class Assistant(Markdown, can_focus=True):
         ("c", "copy"),
     ]
 
-    def __init__(self, output: Message | str = ""):
+    def __init__(self, output: Message | dict[str, str] | str = ""):
         """Initialise the assistant output.
 
         Args:
